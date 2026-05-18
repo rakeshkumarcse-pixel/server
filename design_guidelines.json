@@ -1,0 +1,150 @@
+{
+  "theme": "light",
+  "archetype": "4_swiss_high_contrast",
+  "design_philosophy": {
+    "core_principles": [
+      "Function over form: color is used strictly to convey status (success, error, loading).",
+      "Control Room Layout: High density, rigid grids, 1px borders to separate data.",
+      "Developer familiarity: Use mono-spaced fonts for technical data, logs, and variables."
+    ],
+    "vibe": "Objective, rigid, reliable, fast"
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Work Sans",
+      "weights": ["600", "700"],
+      "tracking": "tracking-tight"
+    },
+    "body": {
+      "font_family": "IBM Plex Sans",
+      "weights": ["400", "500"]
+    },
+    "mono": {
+      "font_family": "JetBrains Mono",
+      "weights": ["400", "600"],
+      "usage": "Build logs, environment variables, commit hashes, domain names"
+    },
+    "scale": {
+      "h1": "text-2xl sm:text-3xl font-semibold tracking-tight",
+      "h2": "text-lg sm:text-xl font-medium",
+      "body": "text-sm",
+      "small": "text-xs text-muted-foreground",
+      "code": "text-[13px] leading-relaxed"
+    }
+  },
+  "colors": {
+    "backgrounds": {
+      "primary": "bg-white",
+      "secondary": "bg-slate-50",
+      "terminal": "bg-slate-950",
+      "surface": "bg-white",
+      "overlay": "bg-slate-900/60"
+    },
+    "borders": {
+      "default": "border-slate-200",
+      "focus": "ring-slate-900",
+      "terminal": "border-slate-800"
+    },
+    "text": {
+      "primary": "text-slate-950",
+      "secondary": "text-slate-500",
+      "terminal": "text-slate-300"
+    },
+    "status": {
+      "success": {
+        "bg": "bg-emerald-50",
+        "text": "text-emerald-700",
+        "border": "border-emerald-200",
+        "indicator": "bg-emerald-500"
+      },
+      "error": {
+        "bg": "bg-red-50",
+        "text": "text-red-700",
+        "border": "border-red-200",
+        "indicator": "bg-red-500"
+      },
+      "building": {
+        "bg": "bg-blue-50",
+        "text": "text-blue-700",
+        "border": "border-blue-200",
+        "indicator": "bg-blue-500"
+      },
+      "queued": {
+        "bg": "bg-slate-100",
+        "text": "text-slate-700",
+        "border": "border-slate-200",
+        "indicator": "bg-slate-400"
+      }
+    }
+  },
+  "spacing_and_layout": {
+    "container": "max-w-6xl mx-auto px-4 sm:px-6 lg:px-8",
+    "dashboard_grid": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6",
+    "card_padding": "p-5 sm:p-6",
+    "border_radius": "rounded-md",
+    "shadows": "shadow-sm"
+  },
+  "components": {
+    "navigation": {
+      "style": "Top-bar navigation, border-b border-slate-200 bg-white sticky top-0 z-50",
+      "links": "text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+    },
+    "cards": {
+      "style": "bg-white border border-slate-200 rounded-md shadow-sm",
+      "hover": "hover:border-slate-300 transition-colors"
+    },
+    "buttons": {
+      "primary": "bg-slate-900 text-white hover:bg-slate-800 rounded-md shadow-sm font-medium px-4 py-2",
+      "secondary": "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 rounded-md px-4 py-2",
+      "danger": "bg-red-600 text-white hover:bg-red-700 rounded-md px-4 py-2"
+    },
+    "terminal_logs": {
+      "container": "bg-slate-950 rounded-md border border-slate-800 overflow-hidden font-mono mt-4",
+      "text": "text-slate-300 text-[13px] leading-relaxed p-4 h-[400px] sm:h-[500px] overflow-y-auto",
+      "line_success": "text-emerald-400",
+      "line_error": "text-red-400",
+      "line_info": "text-blue-400",
+      "line_system": "text-slate-500"
+    },
+    "status_badge": {
+      "style": "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize"
+    },
+    "forms": {
+      "input": "flex h-9 w-full rounded-md border border-slate-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900 disabled:cursor-not-allowed disabled:opacity-50",
+      "label": "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+    }
+  },
+  "icons": {
+    "library": "lucide-react",
+    "stroke_width": "1.5",
+    "size": "w-4 h-4 for inline, w-5 h-5 for structural layout"
+  },
+  "motion": {
+    "transitions": "transition-all duration-200 ease-in-out",
+    "loading": "animate-pulse for skeletons, animate-spin for active deployment indicator icons",
+    "hover": "hover:translate-y-[-1px] hover:shadow-md for project cards"
+  },
+  "media": {
+    "image_urls": [
+      {
+        "url": "https://images.unsplash.com/photo-1689443111130-6e9c7dfd8f9e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGxpZ2h0JTIwZ2VvbWV0cmljJTIwdGVjaG5vbG9neSUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzc5MTMyMDI3fDA&ixlib=rb-4.1.0&q=85",
+        "category": "auth_background",
+        "description": "Abstract technical background for the authentication/login page"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1707061229292-ad11decf3eea?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHxqYXZhJTIwc3ByaW5nJTIwYm9vdCUyMGxvZ298ZW58MHx8fHwxNzc5MTMyMDI3fDA&ixlib=rb-4.1.0&q=85",
+        "category": "empty_state",
+        "description": "Abstract visual for empty states (no deployments yet)"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Install and configure Work Sans (Headings), IBM Plex Sans (Body), and JetBrains Mono (Logs/Code) fonts.",
+    "Use Shadcn UI extensively: tabs, cards, dropdowns, forms, dialogs, badges.",
+    "Follow Archetype 4 (Swiss & High Contrast): Keep the UI highly functional and grayscale heavy. Color should only be used to indicate status (Emerald for success, Red for failure, Blue for building).",
+    "Implement the layout relying on borders and slight grays to separate content. Avoid heavy card shadows, use border separation (1px solid).",
+    "The build logs view must simulate a terminal: use dark slate background (bg-slate-950) with JetBrains Mono font, ensuring new logs auto-scroll.",
+    "Ensure responsive design: Stack project lists and deployment detail views correctly on mobile viewport.",
+    "All interactive elements MUST have a data-testid attribute for testing."
+  ]
+}
