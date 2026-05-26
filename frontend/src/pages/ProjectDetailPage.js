@@ -18,7 +18,10 @@ import {
   Trash2,
   Settings,
   Globe,
-  Key
+  Key,
+  ExternalLink,
+  Copy,
+  Check
 } from 'lucide-react';
 import {
   AlertDialog,
@@ -64,6 +67,7 @@ export const ProjectDetailPage = () => {
   const [newEnvKey, setNewEnvKey] = useState('');
   const [newEnvValue, setNewEnvValue] = useState('');
   const [newDomain, setNewDomain] = useState('');
+  const [copied, setCopied] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -180,6 +184,14 @@ export const ProjectDetailPage = () => {
     }
   };
 
+  const handleCopyUrl = async () => {
+    if (project?.deployment_url) {
+      await navigator.clipboard.writeText(project.deployment_url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -265,6 +277,79 @@ export const ProjectDetailPage = () => {
             </Button>
           </div>
         </div>
+
+        {/* Live Deployment URL Banner */}
+        {project.deployment_url && project.status === 'deployed' && (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-md p-5 mb-6" data-testid="deployment-url-banner">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <h3 className="text-sm font-medium text-emerald-900">Live Deployment</h3>
+                </div>
+                <p className="text-xs text-emerald-700 mb-3">Your backend application is live and accessible at:</p>
+                <a
+                  href={project.deployment_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-sm text-emerald-900 hover:text-emerald-700 underline break-all"
+                  data-testid="deployment-url-link"
+                >
+                  {project.deployment_url}
+                </a>
+              </div>
+              <div className="flex gap-2 flex-shrink-0">
+                <Button
+                  onClick={handleCopyUrl}
+                  variant="outline"
+                  size="sm"
+                  className="bg-white border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                  data-testid="copy-url-button"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4 mr-2" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copy URL
+                    </>
+                  )}
+                </Button>
+                <a
+                  href={project.deployment_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="open-app-button"
+                >
+                  <Button
+                    size="sm"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Open App
+                  </Button>
+                </a>
+              </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-emerald-200 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div>
+                <span className="text-emerald-700">API Endpoint</span>
+                <p className="font-mono text-emerald-900 mt-1 truncate">{project.deployment_url}/api</p>
+              </div>
+              <div>
+                <span className="text-emerald-700">Health Check</span>
+                <p className="font-mono text-emerald-900 mt-1 truncate">{project.deployment_url}/actuator/health</p>
+              </div>
+              <div>
+                <span className="text-emerald-700">Port</span>
+                <p className="font-mono text-emerald-900 mt-1">8080</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tabs */}
         <Tabs defaultValue="deployments" className="w-full">

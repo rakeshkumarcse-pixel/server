@@ -120,6 +120,7 @@ class ProjectResponse(BaseModel):
     status: str
     created_at: str
     last_deployed: Optional[str] = None
+    deployment_url: Optional[str] = None
 
 class DeploymentCreate(BaseModel):
     project_id: str
@@ -294,7 +295,8 @@ async def get_projects(current_user: dict = Depends(get_current_user)):
             auto_deploy=p['auto_deploy'],
             status=p['status'],
             created_at=p['created_at'],
-            last_deployed=p.get('last_deployed')
+            last_deployed=p.get('last_deployed'),
+            deployment_url=p.get('deployment_url')
         ))
     return result
 
@@ -318,7 +320,8 @@ async def get_project(project_id: str, current_user: dict = Depends(get_current_
         auto_deploy=project['auto_deploy'],
         status=project['status'],
         created_at=project['created_at'],
-        last_deployed=project.get('last_deployed')
+        last_deployed=project.get('last_deployed'),
+        deployment_url=project.get('deployment_url')
     )
 
 @api_router.delete('/projects/{project_id}')
@@ -456,11 +459,17 @@ async def complete_deployment(deployment_id: str, current_user: dict = Depends(g
     
     # Simulate completion
     now = datetime.now(timezone.utc)
+    # Generate deployment URL
+    project_slug = project['name'].lower().replace(' ', '-').replace('_', '-')
+    short_id = str(deployment['_id'])[-6:]
+    deployment_url = f"https://{project_slug}-{short_id}.javahost.app"
+    
     new_logs = deployment['logs'] + [
         f"[{now.strftime('%H:%M:%S')}] Build completed successfully",
-        f"[{now.strftime('%H:%M:%S')}] Starting application...",
+        f"[{now.strftime('%H:%M:%S')}] Starting application on port 8080...",
+        f"[{now.strftime('%H:%M:%S')}] Spring Boot application started in 3.241 seconds",
         f"[{now.strftime('%H:%M:%S')}] Application deployed successfully",
-        f"[{now.strftime('%H:%M:%S')}] Deployment URL: https://{project['name']}.yourplatform.com"
+        f"[{now.strftime('%H:%M:%S')}] Deployment URL: {deployment_url}"
     ]
     
     await db.deployments.update_one(
@@ -468,7 +477,8 @@ async def complete_deployment(deployment_id: str, current_user: dict = Depends(g
         {'$set': {
             'status': 'success',
             'completed_at': now.isoformat(),
-            'logs': new_logs
+            'logs': new_logs,
+            'deployment_url': deployment_url
         }}
     )
     
@@ -476,11 +486,12 @@ async def complete_deployment(deployment_id: str, current_user: dict = Depends(g
         {'_id': ObjectId(deployment['project_id'])},
         {'$set': {
             'status': 'deployed',
-            'last_deployed': now.isoformat()
+            'last_deployed': now.isoformat(),
+            'deployment_url': deployment_url
         }}
     )
     
-    return {'message': 'Deployment completed'}
+    return {'message': 'Deployment completed', 'deployment_url': deployment_url}
 
 # Environment Variables Routes
 @api_router.get('/projects/{project_id}/env', response_model=List[EnvVariableResponse])
