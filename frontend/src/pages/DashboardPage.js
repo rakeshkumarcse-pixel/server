@@ -166,7 +166,7 @@ export const DashboardPage = () => {
                     data-testid={`project-deployment-url-${project.id}`}
                   >
                     <ExternalLink className="w-3 h-3 flex-shrink-0" />
-                    <span className="truncate">{project.deployment_url.replace('https://', '')}</span>
+                    <span className="truncate">{project.display_url || project.deployment_url.replace('https://', '')}</span>
                   </a>
                 )}
               </div>

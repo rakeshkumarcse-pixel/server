@@ -7,6 +7,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { NewProjectPage } from './pages/NewProjectPage';
 import { ProjectDetailPage } from './pages/ProjectDetailPage';
+import { PreviewPage } from './pages/PreviewPage';
 import { Toaster } from './components/ui/sonner';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/preview/:projectId" element={<PreviewPage />} />
           <Route
             path="/dashboard"
             element={

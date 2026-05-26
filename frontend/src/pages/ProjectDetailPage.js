@@ -295,7 +295,7 @@ export const ProjectDetailPage = () => {
                   className="font-mono text-sm text-emerald-900 hover:text-emerald-700 underline break-all"
                   data-testid="deployment-url-link"
                 >
-                  {project.deployment_url}
+                  {project.display_url || project.deployment_url}
                 </a>
               </div>
               <div className="flex gap-2 flex-shrink-0">
@@ -337,11 +337,11 @@ export const ProjectDetailPage = () => {
             <div className="mt-4 pt-4 border-t border-emerald-200 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div>
                 <span className="text-emerald-700">API Endpoint</span>
-                <p className="font-mono text-emerald-900 mt-1 truncate">{project.deployment_url}/api</p>
+                <p className="font-mono text-emerald-900 mt-1 truncate">/api</p>
               </div>
               <div>
                 <span className="text-emerald-700">Health Check</span>
-                <p className="font-mono text-emerald-900 mt-1 truncate">{project.deployment_url}/actuator/health</p>
+                <p className="font-mono text-emerald-900 mt-1 truncate">/actuator/health</p>
               </div>
               <div>
                 <span className="text-emerald-700">Port</span>

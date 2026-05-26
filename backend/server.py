@@ -121,6 +121,7 @@ class ProjectResponse(BaseModel):
     created_at: str
     last_deployed: Optional[str] = None
     deployment_url: Optional[str] = None
+    display_url: Optional[str] = None
 
 class DeploymentCreate(BaseModel):
     project_id: str
@@ -296,7 +297,8 @@ async def get_projects(current_user: dict = Depends(get_current_user)):
             status=p['status'],
             created_at=p['created_at'],
             last_deployed=p.get('last_deployed'),
-            deployment_url=p.get('deployment_url')
+            deployment_url=p.get('deployment_url'),
+            display_url=p.get('display_url')
         ))
     return result
 
@@ -321,8 +323,31 @@ async def get_project(project_id: str, current_user: dict = Depends(get_current_
         status=project['status'],
         created_at=project['created_at'],
         last_deployed=project.get('last_deployed'),
-        deployment_url=project.get('deployment_url')
+        deployment_url=project.get('deployment_url'),
+        display_url=project.get('display_url')
     )
+
+# Public preview endpoint - no auth required (simulates a deployed app)
+@api_router.get('/preview/{project_id}')
+async def get_project_preview(project_id: str):
+    try:
+        project = await db.projects.find_one({'_id': ObjectId(project_id)})
+    except:
+        raise HTTPException(status_code=404, detail='Project not found')
+    
+    if not project or project.get('status') != 'deployed':
+        raise HTTPException(status_code=404, detail='Project not deployed')
+    
+    return {
+        'name': project['name'],
+        'github_url': project['github_url'],
+        'branch': project['branch'],
+        'build_tool': project['build_tool'],
+        'java_version': project['java_version'],
+        'display_url': project.get('display_url'),
+        'last_deployed': project.get('last_deployed'),
+        'status': 'UP'
+    }
 
 @api_router.delete('/projects/{project_id}')
 async def delete_project(project_id: str, current_user: dict = Depends(get_current_user)):
@@ -459,17 +484,19 @@ async def complete_deployment(deployment_id: str, current_user: dict = Depends(g
     
     # Simulate completion
     now = datetime.now(timezone.utc)
-    # Generate deployment URL
+    # Generate deployment URL pointing to the platform's preview page
     project_slug = project['name'].lower().replace(' ', '-').replace('_', '-')
     short_id = str(deployment['_id'])[-6:]
-    deployment_url = f"https://{project_slug}-{short_id}.javahost.app"
+    frontend_url = os.environ.get('FRONTEND_URL', 'https://java-spring-deploy.preview.emergentagent.com')
+    deployment_url = f"{frontend_url}/preview/{deployment['project_id']}"
+    display_url = f"{project_slug}-{short_id}.javahost.app"
     
     new_logs = deployment['logs'] + [
         f"[{now.strftime('%H:%M:%S')}] Build completed successfully",
         f"[{now.strftime('%H:%M:%S')}] Starting application on port 8080...",
         f"[{now.strftime('%H:%M:%S')}] Spring Boot application started in 3.241 seconds",
         f"[{now.strftime('%H:%M:%S')}] Application deployed successfully",
-        f"[{now.strftime('%H:%M:%S')}] Deployment URL: {deployment_url}"
+        f"[{now.strftime('%H:%M:%S')}] Deployment URL: {display_url}"
     ]
     
     await db.deployments.update_one(
@@ -478,7 +505,8 @@ async def complete_deployment(deployment_id: str, current_user: dict = Depends(g
             'status': 'success',
             'completed_at': now.isoformat(),
             'logs': new_logs,
-            'deployment_url': deployment_url
+            'deployment_url': deployment_url,
+            'display_url': display_url
         }}
     )
     
@@ -487,7 +515,8 @@ async def complete_deployment(deployment_id: str, current_user: dict = Depends(g
         {'$set': {
             'status': 'deployed',
             'last_deployed': now.isoformat(),
-            'deployment_url': deployment_url
+            'deployment_url': deployment_url,
+            'display_url': display_url
         }}
     )
     
